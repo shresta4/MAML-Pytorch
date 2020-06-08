@@ -9,6 +9,7 @@ import  numpy as np
 from    learner import Learner
 from    copy import deepcopy
 
+# import pdb
 
 
 class Meta(nn.Module):
@@ -168,6 +169,8 @@ class Meta(nn.Module):
 
         # 1. run the i-th task and compute loss for k=0
         logits = net(x_spt)
+        #pdb.set_trace() 
+        #y_spt = torch.tensor(y_spt, dtype=torch.long, device=device) #
         loss = F.cross_entropy(logits, y_spt)
         grad = torch.autograd.grad(loss, net.parameters())
         fast_weights = list(map(lambda p: p[1] - self.update_lr * p[0], zip(grad, net.parameters())))
