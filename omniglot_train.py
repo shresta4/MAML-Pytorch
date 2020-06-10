@@ -84,6 +84,9 @@ def main(args):
             accs = np.array(accs).mean(axis=0).astype(np.float16)
             print('Test acc:', accs)
 
+        if (step == 1000):
+            break; 
+
 
 if __name__ == '__main__':
 
