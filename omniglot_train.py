@@ -65,7 +65,7 @@ def main(args):
             print('step:', step, '\ttraining acc:', accs)
 
         # if step % 500 == 0:
-        if step % 4000 == 0: 
+        if step % 10000 == 0: 
             accs = []
             for _ in range(1000//args.task_num):
                 # test
