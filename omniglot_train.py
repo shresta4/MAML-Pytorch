@@ -64,7 +64,8 @@ def main(args):
         if step % 50 == 0:
             print('step:', step, '\ttraining acc:', accs)
 
-        if step % 500 == 0:
+        # if step % 500 == 0:
+        if step % 4000 == 0: 
             accs = []
             for _ in range(1000//args.task_num):
                 # test
@@ -83,9 +84,6 @@ def main(args):
             # [b, update_step+1]
             accs = np.array(accs).mean(axis=0).astype(np.float16)
             print('Test acc:', accs)
-
-        if (step == 1000):
-            break; 
 
 
 if __name__ == '__main__':
