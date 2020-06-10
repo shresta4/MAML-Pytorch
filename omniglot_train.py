@@ -47,43 +47,43 @@ def main(args):
                        imgsz=args.imgsz)
 
     for step in range(args.epoch):
+        if step % 4000 == 0: 
+            x_spt, y_spt, x_qry, y_qry = db_train.next()
+            x_spt, y_spt, x_qry, y_qry = torch.from_numpy(x_spt).to(device), torch.from_numpy(y_spt).to(device), \
+                                        torch.from_numpy(x_qry).to(device), torch.from_numpy(y_qry).to(device)
 
-        x_spt, y_spt, x_qry, y_qry = db_train.next()
-        x_spt, y_spt, x_qry, y_qry = torch.from_numpy(x_spt).to(device), torch.from_numpy(y_spt).to(device), \
-                                     torch.from_numpy(x_qry).to(device), torch.from_numpy(y_qry).to(device)
+            # set traning=True to update running_mean, running_variance, bn_weights, bn_bias
+            #print("TYPE: " + y_spt.type())
+            #pdb.set_trace()
+            y_spt = torch.tensor(y_spt, dtype=torch.int64, device=device) # diff syntax ? 
+            y_qry = torch.tensor(y_qry, dtype=torch.int64, device=device)
+            #print("TYPE: "+y_spt.type())
+            #pdb.set_trace()
+            accs = maml(x_spt, y_spt, x_qry, y_qry)
 
-        # set traning=True to update running_mean, running_variance, bn_weights, bn_bias
-        #print("TYPE: " + y_spt.type())
-        #pdb.set_trace()
-        y_spt = torch.tensor(y_spt, dtype=torch.int64, device=device) # diff syntax ? 
-        y_qry = torch.tensor(y_qry, dtype=torch.int64, device=device)
-        #print("TYPE: "+y_spt.type())
-        #pdb.set_trace()
-        accs = maml(x_spt, y_spt, x_qry, y_qry)
+            if step % 50 == 0:
+                print('step:', step, '\ttraining acc:', accs)
 
-        if step % 50 == 0:
-            print('step:', step, '\ttraining acc:', accs)
+            # if step % 500 == 0:
+            if step % 12000 == 0: 
+                accs = []
+                for _ in range(1000//args.task_num):
+                    # test
+                    x_spt, y_spt, x_qry, y_qry = db_train.next('test')
+                    x_spt, y_spt, x_qry, y_qry = torch.from_numpy(x_spt).to(device), torch.from_numpy(y_spt).to(device), \
+                                                torch.from_numpy(x_qry).to(device), torch.from_numpy(y_qry).to(device)
 
-        # if step % 500 == 0:
-        if step % 10000 == 0: 
-            accs = []
-            for _ in range(1000//args.task_num):
-                # test
-                x_spt, y_spt, x_qry, y_qry = db_train.next('test')
-                x_spt, y_spt, x_qry, y_qry = torch.from_numpy(x_spt).to(device), torch.from_numpy(y_spt).to(device), \
-                                             torch.from_numpy(x_qry).to(device), torch.from_numpy(y_qry).to(device)
+                    y_spt = torch.tensor(y_spt, dtype=torch.int64, device=device) # diff syntax ? 
+                    y_qry = torch.tensor(y_qry, dtype=torch.int64, device=device)
 
-                y_spt = torch.tensor(y_spt, dtype=torch.int64, device=device) # diff syntax ? 
-                y_qry = torch.tensor(y_qry, dtype=torch.int64, device=device)
+                    # split to single task each time
+                    for x_spt_one, y_spt_one, x_qry_one, y_qry_one in zip(x_spt, y_spt, x_qry, y_qry):
+                        test_acc = maml.finetunning(x_spt_one, y_spt_one, x_qry_one, y_qry_one)
+                        accs.append( test_acc )
 
-                # split to single task each time
-                for x_spt_one, y_spt_one, x_qry_one, y_qry_one in zip(x_spt, y_spt, x_qry, y_qry):
-                    test_acc = maml.finetunning(x_spt_one, y_spt_one, x_qry_one, y_qry_one)
-                    accs.append( test_acc )
-
-            # [b, update_step+1]
-            accs = np.array(accs).mean(axis=0).astype(np.float16)
-            print('Test acc:', accs)
+                # [b, update_step+1]
+                accs = np.array(accs).mean(axis=0).astype(np.float16)
+                print('Test acc:', accs)
 
 
 if __name__ == '__main__':
