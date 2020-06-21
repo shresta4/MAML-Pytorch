@@ -55,10 +55,10 @@ def main(args):
     for step in range(args.epoch):
         #if step % 4000 == 0: 
         x_spt, y_spt, x_qry, y_qry = db_train.next()
-        print (x_spt)
-        print (y_spt)
-        print (x_qry)
-        print (y_qry)
+        print (x_spt.shape)
+        print (y_spt.shape)
+        print (x_qry.shape)
+        print (y_qry.shape)
         x_spt, y_spt, x_qry, y_qry = torch.from_numpy(x_spt).to(device), torch.from_numpy(y_spt).to(device), \
                                     torch.from_numpy(x_qry).to(device), torch.from_numpy(y_qry).to(device)
 
