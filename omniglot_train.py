@@ -46,9 +46,19 @@ def main(args):
                        k_query=args.k_qry,
                        imgsz=args.imgsz)
 
+    print(args.task_num) # 32
+    print(args.n_way) # 5
+    print(args.k_spt) # 1
+    print(args.k_qry) # 15
+    print(args.imgsz) # 28
+
     for step in range(args.epoch):
         #if step % 4000 == 0: 
         x_spt, y_spt, x_qry, y_qry = db_train.next()
+        print (x_spt)
+        print (y_spt)
+        print (x_qry)
+        print (y_qry)
         x_spt, y_spt, x_qry, y_qry = torch.from_numpy(x_spt).to(device), torch.from_numpy(y_spt).to(device), \
                                     torch.from_numpy(x_qry).to(device), torch.from_numpy(y_qry).to(device)
 
