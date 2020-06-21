@@ -55,13 +55,12 @@ def main(args):
     for step in range(args.epoch):
         #if step % 4000 == 0: 
         x_spt, y_spt, x_qry, y_qry = db_train.next()
+        x_spt, y_spt, x_qry, y_qry = torch.from_numpy(x_spt).to(device), torch.from_numpy(y_spt).to(device), \
+                                    torch.from_numpy(x_qry).to(device), torch.from_numpy(y_qry).to(device)
         print (x_spt.shape)
         print (y_spt.shape)
         print (x_qry.shape)
         print (y_qry.shape)
-        x_spt, y_spt, x_qry, y_qry = torch.from_numpy(x_spt).to(device), torch.from_numpy(y_spt).to(device), \
-                                    torch.from_numpy(x_qry).to(device), torch.from_numpy(y_qry).to(device)
-
         # set traning=True to update running_mean, running_variance, bn_weights, bn_bias
         #print("TYPE: " + y_spt.type())
         #pdb.set_trace()
