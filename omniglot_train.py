@@ -57,10 +57,7 @@ def main(args):
         x_spt, y_spt, x_qry, y_qry = db_train.next()
         x_spt, y_spt, x_qry, y_qry = torch.from_numpy(x_spt).to(device), torch.from_numpy(y_spt).to(device), \
                                     torch.from_numpy(x_qry).to(device), torch.from_numpy(y_qry).to(device)
-        print (x_spt.shape)
-        print (y_spt.shape)
-        print (x_qry.shape)
-        print (y_qry.shape)
+
         # set traning=True to update running_mean, running_variance, bn_weights, bn_bias
         #print("TYPE: " + y_spt.type())
         #pdb.set_trace()
@@ -87,6 +84,10 @@ def main(args):
 
                 # split to single task each time
                 for x_spt_one, y_spt_one, x_qry_one, y_qry_one in zip(x_spt, y_spt, x_qry, y_qry):
+                    print (x_spt_one.size)
+                    print (y_spt_one.size)
+                    print (x_qry_one.size)
+                    print (y_qry_one.size)
                     test_acc = maml.finetunning(x_spt_one, y_spt_one, x_qry_one, y_qry_one)
                     accs.append( test_acc )
 
