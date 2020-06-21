@@ -84,10 +84,10 @@ def main(args):
 
                 # split to single task each time
                 for x_spt_one, y_spt_one, x_qry_one, y_qry_one in zip(x_spt, y_spt, x_qry, y_qry):
-                    print (torch.Size(x_spt_one))
-                    print (torch.Size(y_spt_one))
-                    print (torch.Size(x_qry_one))
-                    print (torch.Size(y_qry_one))
+                    print (x_spt_one.size())
+                    print (y_spt_one.size())
+                    print (x_qry_one.size())
+                    print (y_qry_one.size())
                     test_acc = maml.finetunning(x_spt_one, y_spt_one, x_qry_one, y_qry_one)
                     accs.append( test_acc )
 
